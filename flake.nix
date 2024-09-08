@@ -1,5 +1,5 @@
 {
-  description = "nix-vagrant declarative vagrant boxes";
+  description = "nix-vagrant render, run and manage declarative HashiCorp Vagrant config files";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
@@ -19,18 +19,18 @@
       flake-utils,
       nixago,
     }:
-    flake-utils.lib.eachDefaultSystem (
+    (flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = import nixpkgs {
           config.allowUnfree = true;
           inherit system;
         };
-
-        lib = import ./lib { inherit system pkgs nixago; };
       in
       {
+        lib = import ./lib { inherit system pkgs nixago; };
+
         formatter = pkgs.nixfmt-rfc-style;
       }
-    );
+    ));
 }

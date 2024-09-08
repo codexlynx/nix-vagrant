@@ -1,39 +1,24 @@
 {
   system,
-  pkgs,
   nixago,
 }:
-{
-  package ? pkgs.vagrant,
-  name,
-  provider,
-  box,
-  gui ? false,
-}:
-let
-  inherit (pkgs) lib writeShellScriptBin;
+# TODO: Validate and documentate config
+path: config:
+(nixago.lib."${system}".make {
+  format = "text";
+  output = path;
 
-  template = import ./../vagrantfile { inherit system nixago; };
-  cfg = template { inherit name provider box gui; };
-in
-{
-  up = writeShellScriptBin "up" ''
-    export VAGRANT_VAGRANTFILE=./.vagrant/${name}
-    ${(nixago.lib."${system}".make cfg).shellHook}
-    ${lib.getExe package} box update
-    ${lib.getExe package} up
-  '';
+  data = {
+    data = {
+      inherit config;
+    };
+  };
 
-  destroy = writeShellScriptBin "destroy" ''
-    export VAGRANT_VAGRANTFILE=./.vagrant/${name}
-    ${(nixago.lib."${system}".make cfg).shellHook}
-    ${lib.getExe package} destroy -f
-  '';
-
-  ssh = writeShellScriptBin "ssh" ''
-    export VAGRANT_VAGRANTFILE=./.vagrant/${name}
-    export TMPFILE=$(mktemp)
-    ${lib.getExe package} ssh-config > $TMPFILE
-    ssh -F $TMPFILE ${name} $@
-  '';
-}
+  engine = nixago.engines."${system}".cue {
+    flags = {
+      expression = "rendered";
+      out = "text";
+    };
+    files = [ ./template.cue ];
+  };
+})
