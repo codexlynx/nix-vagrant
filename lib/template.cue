@@ -3,7 +3,6 @@ import "text/template"
 // TODO: Model more config: https://developer.hashicorp.com/vagrant/docs/vagrantfile/machine_settings
 
 #Vagrant: {
-	package: string
 	name: string
 	box: string
 	provider: string

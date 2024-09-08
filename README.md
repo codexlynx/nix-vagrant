@@ -17,7 +17,6 @@ A [nix](https://zero-to-nix.com/concepts/nix-language) library for render, run a
 vagrant.file.cumulus = 
   pkgs.writeShellScriptBin "result"
     (nix-vagrant.lib."${system}".make "Vagrantfile" {
-      package = pkgs.vagrant;
       name = "machine1";
       provider = "vmware_fusion";
       box = "CumulusCommunity/cumulus-vx";
@@ -32,8 +31,7 @@ $ nix run .#vagrant.x86_64-linux.file.cumulus
 
 ### Manual machine lifecycle control
 ```nix
-vagrant.machine.cumulus = nix-vagrant.lib."${system}".machine {
-  package = pkgs.vagrant;
+vagrant.machine.cumulus = nix-vagrant.lib."${system}".machine pkgs.vagrant {
   name = "machine1";
   provider = "vmware_fusion";
   box = "CumulusCommunity/cumulus-vx";
@@ -50,8 +48,7 @@ $ nix run .#vagrant.x86_64-linux.machine.cumulus.destroy
 ### Box runner
 ```nix
 packages.start = nix-vagrant.lib."${system}".runner {
-  box = {
-    package = pkgs.vagrant;
+  config = {
     name = "windows1";
     provider = "virtualbox";
     box = "gusztavvargadr/windows-11";
