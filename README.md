@@ -6,7 +6,7 @@
 <img src="https://nixos.org/logo/nixos-logo-only-hires.png" width="200" align="right" alt="NixOS">
 
 
-A nix library for render, run and manage declarative HashiCorp Vagrant config files powered by nixago and CUE Lang.
+A [nix](https://zero-to-nix.com/concepts/nix-language) library for render, run and manage declarative HashiCorp [Vagrant](https://www.vagrantup.com/) config files powered by nixago and [CUE Lang](https://cuelang.org/).
 * Make Vagrantfiles from nix
 * Manage vagrant machine lifecycle
 * Batteries includes box runner
@@ -16,7 +16,7 @@ A nix library for render, run and manage declarative HashiCorp Vagrant config fi
 ```nix
 vagrant.file.cumulus = 
   pkgs.writeShellScriptBin "result"
-    (nix-vagrant.lib."${system}".make "test" {
+    (nix-vagrant.lib."${system}".make "Vagrantfile" {
       package = pkgs.vagrant;
       name = "machine1";
       provider = "vmware_fusion";

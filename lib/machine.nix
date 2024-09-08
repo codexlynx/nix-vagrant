@@ -1,12 +1,9 @@
 {
-  system,
   pkgs,
-  nixago,
   make,
 }:
 let
   inherit (pkgs) lib writeShellScriptBin;
-
 in
 # TODO: Validate and documentate config
 config:
@@ -18,7 +15,7 @@ in
     export VAGRANT_VAGRANTFILE=${vagrantfile}
     ${(make vagrantfile config).shellHook}
     ${lib.getExe config.package} box update
-    ${lib.getExe config.package} up
+    ${lib.getExe config.package} up --provider=${config.provider}
   '';
 
   destroy = writeShellScriptBin "destroy" ''
