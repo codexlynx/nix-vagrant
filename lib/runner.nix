@@ -2,25 +2,21 @@
 {
   package ? pkgs.vagrant,
   config,
-  script,
-  launchScript ? "sh",
+  provision ? {},
   preStart ? "",
   postStart ? "",
 }:
 let
-  inherit (pkgs) lib writeShellScriptBin writeTextFile;
+  inherit (pkgs) lib writeShellScriptBin;
 
-  vagrant = machine package config;
-  scriptFile = writeTextFile {
-    name = "script";
-    text = script;
-    executable = false;
+  vagrant = machine {
+    inherit package config provision;
   };
 in
 writeShellScriptBin "runner" ''
   ${preStart}
   ${lib.getExe vagrant.up}
-  ${lib.getExe vagrant.ssh} "${launchScript}${scriptFile}"
+  ${lib.getExe vagrant.provision}
   ${lib.getExe vagrant.destroy}
   ${postStart}
 ''

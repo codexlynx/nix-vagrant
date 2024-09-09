@@ -31,19 +31,32 @@ $ nix run .#vagrant.x86_64-linux.file.cumulus
 
 ### Manual machine lifecycle control
 ```nix
-vagrant.machine.cumulus = nix-vagrant.lib."${system}".machine pkgs.vagrant {
-  name = "machine1";
-  provider = "vmware_fusion";
-  box = "CumulusCommunity/cumulus-vx";
-  gui = false;
+vagrant.machine.windows = nix-vagrant.lib."${system}".machine {
+  package = pkgs.vagrant;
+
+  config = {
+    name = "windows1";
+    provider = "virtualbox";
+    box = "gusztavvargadr/windows-11";
+    gui = true;
+  };
+
+  provision = {
+    launchScript = "powershell -noninteractive -executionpolicy unrestricted - < C:/";
+
+    script = ''
+      echo Hello from Windows!
+    '';
+  };
 };
 ```
 #### Commands
 ```commandline
-$ nix run .#vagrant.x86_64-linux.machine.cumulus.up
-$ nix run .#vagrant.x86_64-linux.machine.cumulus.ssh
-$ nix run .#vagrant.x86_64-linux.machine.cumulus.destroy
-$ nix run .#vagrant.x86_64-linux.machine.cumulus.ssh-config
+$ nix run .#vagrant.x86_64-linux.machine.windows.up
+$ nix run .#vagrant.x86_64-linux.machine.windows.ssh
+$ nix run .#vagrant.x86_64-linux.machine.windows.destroy
+$ nix run .#vagrant.x86_64-linux.machine.windows.ssh-config
+$ nix run .#vagrant.x86_64-linux.machine.windows.provision
 ```
 
 ### Box runner
@@ -55,13 +68,6 @@ packages.start = nix-vagrant.lib."${system}".runner {
     box = "gusztavvargadr/windows-11";
     gui = false;
   };
-
-  launchScript = "powershell -noninteractive -executionpolicy unrestricted - < C:/";
-
-  script = ''
-    $PSVersionTable.BuildVersion
-    cmd /c ver
-  '';
 };
 ```
 
