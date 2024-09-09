@@ -9,8 +9,15 @@ in
 package: config:
 let
   vagrantfile = "./.vagrant/${config.name}";
+
+  ssh-config = writeShellScriptBin "ssh-config" ''
+    export VAGRANT_VAGRANTFILE=${vagrantfile}
+    ${lib.getExe package} ssh-config
+  '';
 in
 {
+  inherit ssh-config;
+
   up = writeShellScriptBin "up" ''
     export VAGRANT_VAGRANTFILE=${vagrantfile}
     ${(make vagrantfile config).shellHook}
@@ -25,9 +32,8 @@ in
   '';
 
   ssh = writeShellScriptBin "ssh" ''
-    export VAGRANT_VAGRANTFILE=${vagrantfile}
     export TMPFILE=$(mktemp)
-    ${lib.getExe package} ssh-config > $TMPFILE
+    ${pkgs.lib.getExe ssh-config} > $TMPFILE
     ssh -F $TMPFILE ${config.name} $@
   '';
 }

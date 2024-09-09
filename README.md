@@ -43,6 +43,7 @@ vagrant.machine.cumulus = nix-vagrant.lib."${system}".machine pkgs.vagrant {
 $ nix run .#vagrant.x86_64-linux.machine.cumulus.up
 $ nix run .#vagrant.x86_64-linux.machine.cumulus.ssh
 $ nix run .#vagrant.x86_64-linux.machine.cumulus.destroy
+$ nix run .#vagrant.x86_64-linux.machine.cumulus.ssh-config
 ```
 
 ### Box runner
@@ -55,11 +56,11 @@ packages.start = nix-vagrant.lib."${system}".runner {
     gui = false;
   };
 
-  launchScript = "powershell -noprofile -noninteractive - < C:/";
+  launchScript = "powershell -noninteractive -executionpolicy unrestricted - < C:/";
 
   script = ''
     $PSVersionTable.BuildVersion
-    cmd /k ver
+    cmd /c ver
   '';
 };
 ```

@@ -5,7 +5,7 @@ import "text/template"
 #Vagrant: {
 	name: string
 	box: string
-	provider: string
+	provider: "virtualbox"
 	gui: bool
 }
 

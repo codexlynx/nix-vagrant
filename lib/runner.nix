@@ -4,6 +4,8 @@
   config,
   script,
   launchScript ? "sh",
+  preStart ? "",
+  postStart ? "",
 }:
 let
   inherit (pkgs) lib writeShellScriptBin writeTextFile;
@@ -16,7 +18,9 @@ let
   };
 in
 writeShellScriptBin "runner" ''
+  ${preStart}
   ${lib.getExe vagrant.up}
   ${lib.getExe vagrant.ssh} "${launchScript}${scriptFile}"
   ${lib.getExe vagrant.destroy}
+  ${postStart}
 ''
