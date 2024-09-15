@@ -6,7 +6,7 @@
 {
   package ? pkgs.vagrant,
   config,
-  provision ? {},
+  init ? { },
 }:
 let
   inherit (pkgs) lib writeTextFile writeShellScriptBin;
@@ -15,7 +15,7 @@ let
 
   provisionScript = writeTextFile {
     name = "script";
-    text = provision.script;
+    text = init.script;
     executable = false;
   };
 
@@ -29,23 +29,24 @@ let
     ${pkgs.lib.getExe ssh-config} > $TMPFILE
     ssh -F $TMPFILE ${config.name} $@
   '';
+
+  provision = writeShellScriptBin "provision" ''
+    ${lib.getExe ssh} "${init.launchScript}${provisionScript}"
+  '';
 in
 {
-  inherit ssh-config ssh;
+  inherit ssh-config ssh provision;
 
   up = writeShellScriptBin "up" ''
     export VAGRANT_VAGRANTFILE=${vagrantfile}
     ${(make vagrantfile config).shellHook}
     ${lib.getExe package} up --provider=${config.provider}
+    ${lib.getExe provision}
   '';
 
   destroy = writeShellScriptBin "destroy" ''
     export VAGRANT_VAGRANTFILE=${vagrantfile}
     ${(make vagrantfile config).shellHook}
     ${lib.getExe package} destroy -f
-  '';
-
-  provision = writeShellScriptBin "provision" ''
-    ${lib.getExe ssh} "${provision.launchScript}${provisionScript}"
   '';
 }

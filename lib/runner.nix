@@ -2,7 +2,7 @@
 {
   package ? pkgs.vagrant,
   config,
-  provision ? {},
+  provision ? { },
   preStart ? "",
   postStart ? "",
 }:
