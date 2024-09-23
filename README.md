@@ -41,7 +41,7 @@ vagrant.machine.windows = nix-vagrant.lib."${system}".machine {
     gui = true;
   };
 
-  provision = {
+  init = {
     launchScript = "powershell -noninteractive -executionpolicy unrestricted - < C:/";
 
     script = ''

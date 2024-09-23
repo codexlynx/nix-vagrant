@@ -6,7 +6,12 @@
 {
   package ? pkgs.vagrant,
   config,
-  init ? { },
+  init ? {
+    launchScript = "";
+    script = "";
+  },
+  scriptPreStart ? "",
+  scriptPostStart ? "",
 }:
 let
   inherit (pkgs) lib writeTextFile writeShellScriptBin;
@@ -26,7 +31,7 @@ let
 
   ssh = writeShellScriptBin "ssh" ''
     export TMPFILE=$(mktemp)
-    ${pkgs.lib.getExe ssh-config} > $TMPFILE
+    ${lib.getExe ssh-config} > $TMPFILE
     ssh -F $TMPFILE ${config.name} $@
   '';
 
@@ -40,7 +45,9 @@ in
   up = writeShellScriptBin "up" ''
     export VAGRANT_VAGRANTFILE=${vagrantfile}
     ${(make vagrantfile config).shellHook}
+    ${scriptPreStart}
     ${lib.getExe package} up --provider=${config.provider}
+    ${scriptPostStart}
     ${lib.getExe provision}
   '';
 

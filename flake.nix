@@ -26,9 +26,18 @@
           config.allowUnfree = true;
           inherit system;
         };
+
+        ssh-to-ansible = pkgs.callPackage ./pkgs/ssh-to-ansible { };
       in
       {
-        lib = import ./lib { inherit system pkgs nixago; };
+        lib = import ./lib {
+          inherit
+            system
+            pkgs
+            nixago
+            ssh-to-ansible
+            ;
+        };
 
         formatter = pkgs.nixfmt-rfc-style;
       }
