@@ -16,7 +16,7 @@
 let
   inherit (pkgs) lib writeTextFile writeShellScriptBin;
 
-  vagrantfile = "./.vagrant/${config.name}";
+  vagrantFile = "./.vagrant/${config.name}";
 
   provisionScript = writeTextFile {
     name = "script";
@@ -25,7 +25,7 @@ let
   };
 
   ssh-config = writeShellScriptBin "ssh-config" ''
-    export VAGRANT_VAGRANTFILE=${vagrantfile}
+    export VAGRANT_VAGRANTFILE=${vagrantFile}
     ${lib.getExe package} ssh-config
   '';
 
@@ -43,8 +43,8 @@ in
   inherit ssh-config ssh provision;
 
   up = writeShellScriptBin "up" ''
-    export VAGRANT_VAGRANTFILE=${vagrantfile}
-    ${(make vagrantfile config).shellHook}
+    export VAGRANT_VAGRANTFILE=${vagrantFile}
+    ${(make vagrantFile config).shellHook}
     ${scriptPreStart}
     ${lib.getExe package} up --provider=${config.provider}
     ${scriptPostStart}
@@ -52,8 +52,8 @@ in
   '';
 
   destroy = writeShellScriptBin "destroy" ''
-    export VAGRANT_VAGRANTFILE=${vagrantfile}
-    ${(make vagrantfile config).shellHook}
+    export VAGRANT_VAGRANTFILE=${vagrantFile}
+    ${(make vagrantFile config).shellHook}
     ${lib.getExe package} destroy -f
   '';
 }
