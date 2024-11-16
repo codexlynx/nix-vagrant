@@ -42,7 +42,8 @@ let
           name = "Install boxstarter pkgs";
           "ansible.windows.win_powershell" = {
             script = ''
-              Install-BoxstarterPackage -PackageName "${lib.concatStringsSep "," boxstartedPackages}" -DisableReboots
+              Import-Module "''${Env:ProgramData}\boxstarter\boxstarter.chocolatey\boxstarter.chocolatey.psd1" -Force
+              Install-BoxstarterPackage -PackageName "${lib.concatStringsSep "\",\"" boxstartedPackages}" -DisableReboots
             '';
           };
         }
